@@ -221,7 +221,7 @@ local function FixUpFenceOrientation(inst, deployedrotation)
 				SetIsSwingRight(inst, false)             
 			end             
 
-			etOrientation(inst, inst.Transform:GetRotation())         
+			SetOrientation(inst, inst.Transform:GetRotation())         
 		end     
 	end      
 	GetAnimState(inst):PlayAnimation(GetAnimName(inst, "idle")) 
