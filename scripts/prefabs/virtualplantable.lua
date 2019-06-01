@@ -1,5 +1,6 @@
-require "prefabutil"  
-local function make_virtualitem(data)     
+-- require "prefabutil"
+local VIRTUAL_PREFIX = "virtual_"
+local function make_virtual_plantable(data)     
 	-- local assets ={Asset("ANIM", "anim/"..data.name..".zip"),}      
 	-- if data.build ~= nil then         
 	-- 	table.insert(assets, Asset("ANIM", "anim/"..data.build..".zip"))     
@@ -11,7 +12,7 @@ local function make_virtualitem(data)
 	end      
 
 	local function ondeploy(inst, pt, deployer)         
-		local tree = SpawnPrefab("virtual"..data.name)         
+		local tree = SpawnPrefab(VIRTUAL_PREFIX..data.name)         
 		if tree ~= nil then             
 			tree.Transform:SetPosition(pt:Get())             
 			inst.components.stackable:Get():Remove()             
@@ -60,13 +61,13 @@ local function make_virtualitem(data)
 	local function CanActivate(inst, doer)                  
 		local ret = false         
             
-		ret = doer.components.inventory:Has("dug_"..name,1)                
+		ret = doer.components.inventory:Has("dug_"..data.name,1)                
 		return ret     
 	end      
 
 	local function Activate(inst, doer)                  
-		local truestruct = SpawnPrefab(name)         
-		doer.components.inventory:ConsumeByName("dug_"..name, 1)             
+		local truestruct = SpawnPrefab(data.name)         
+		doer.components.inventory:ConsumeByName("dug_"..data.name, 1)             
 		truestruct.Transform:SetPosition(inst.Transform:GetWorldPosition())             
 		truestruct.components.pickable:OnTransplant()	        		         
 		onhammered(inst)     
@@ -102,9 +103,9 @@ local function make_virtualitem(data)
 	end      
 
 
-	return Prefab("virtual"..data.name, fn, assets),
-		Prefab("virtualdug_"..data.name, itemfn, assets),
-		MakePlacer("virtualdug_"..data.name.."_placer", data.bank or data.name, data.build or data.name, data.anim or "idle")
+	return Prefab(VIRTUAL_PREFIX..data.name, fn, assets),
+		Prefab(VIRTUAL_PREFIX.."dug_"..data.name, itemfn, assets),
+		MakePlacer(VIRTUAL_PREFIX.."dug_"..data.name.."_placer", data.bank or data.name, data.build or data.name, data.anim or "idle")
 	
 end  
 
@@ -121,7 +122,7 @@ local plantables =
 local prefabs = {} 
 
 for i, v in ipairs(plantables) do
-	local plant, dug_plant, placer = make_virtualitem(v)
+	local plant, dug_plant, placer = make_virtual_plantable(v)
 	table.insert(prefabs, plant)     
 	table.insert(prefabs, dug_plant)
 	table.insert(prefabs, placer) 

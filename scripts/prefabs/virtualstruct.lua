@@ -1,5 +1,7 @@
 local assets = { }  
 local prefabs = {   "collapse_small", }  
+local VIRTUAL_PREFIX = "virtual_"
+
 local function MakeVirtualStruct(name, bank, build, anim)     
 	local function onhammered(inst, worker)         
 		inst:Remove()     
@@ -31,11 +33,7 @@ local function MakeVirtualStruct(name, bank, build, anim)
 			end     
 
 			truestruct.Transform:SetPosition(inst.Transform:GetWorldPosition())
-			truestruct.Transform:SetRotation(inst.Transform:GetRotation())          
-		else             
-			doer.components.inventory:ConsumeByName("dug_"..name, 1)             
-			truestruct.Transform:SetPosition(inst.Transform:GetWorldPosition())             
-			truestruct.components.pickable:OnTransplant()	        
+			truestruct.Transform:SetRotation(inst.Transform:GetRotation())          	        
 		end         
 
 		onhammered(inst)     
@@ -72,7 +70,7 @@ local function MakeVirtualStruct(name, bank, build, anim)
 		return inst     
 	end      
 
-	return Prefab("virtual"..name, fn, assets, prefabs) 
+	return Prefab(VIRTUAL_PREFIX..name, fn, assets, prefabs) 
 end  
 
 return MakeVirtualStruct("firepit","firepit","firepit","idle"),     
