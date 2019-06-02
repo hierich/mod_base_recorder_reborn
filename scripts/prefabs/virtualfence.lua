@@ -432,12 +432,12 @@ local function MakeWall(name, builds, isdoor)
 		inst.components.workable:SetWorkAction(ACTIONS.HAMMER)         
 		inst.components.workable:SetWorkLeft(1)         
 		inst.components.workable:SetOnFinishCallback(onhammered)          
-             
+		             
 		inst:AddComponent("activatable")             
 		inst.components.activatable.quickaction = true             
 		inst.components.activatable.CanActivateFn = CanActivate             
 		inst.components.activatable.OnActivate = Activate         
-         
+		          
 
 		inst.OnRemoveEntity = onremove          
 		inst.OnSave = onsave         

@@ -1,4 +1,11 @@
-PrefabFiles = { "virtualstruct",     "virtualwall",     "virtualplantable",     "virtualfence", }  
+PrefabFiles = 
+{ 
+	"virtualstruct",     
+	"virtualwall",     
+	"virtualplantable",     
+	"virtualfence",
+	"camera" 
+}  
 Assets = {      Asset( "ATLAS", "images/hud/virtualtab.xml" ),  }  
 
 local STRINGS = GLOBAL.STRINGS 
@@ -11,17 +18,17 @@ local CHARACTER_INGREDIENT = GLOBAL.CHARACTER_INGREDIENT
 local mylanguage = GetModConfigData("language") 
 if mylanguage == 1 then     
 	STRINGS.NAMES.VIRTUALSTRUCT_TAB = "Virtual Structure"     
- 
+	-- STRINGS.NAMES.VIRTUALITEM_TAB = "Virtual Item" 
 else     
 	STRINGS.NAMES.VIRTUALSTRUCT_TAB = "虚拟建筑"     
-
+	-- STRINGS.NAMES.VIRTUALITEM_TAB = "虚拟物品" 
 end  
 
 -- the prefix is just for this mod
 local VIRTUAL_PREFIX = "virtual_"
 
 virtualtab = AddRecipeTab(STRINGS.NAMES.VIRTUALSTRUCT_TAB, 99, "images/hud/virtualtab.xml", "virtualtab.tex") 
-  
+-- virtualitemtab = AddRecipeTab(STRINGS.NAMES.VIRTUALITEM_TAB, 100, "images/hud/virtualtab.xml", "virtualtab.tex")  
 TUNING.VIRTUALALPHA = GetModConfigData("alpha")  
 local color = GetModConfigData("color") 
 TUNING.VIRTUALRED = color / 100 
@@ -122,9 +129,8 @@ local function AddVirtualRecipe()
 end
 -- add recipe
 AddVirtualRecipe()
-  
-  
 
+local require = GLOBAL.require
 local SpawnPrefab = GLOBAL.SpawnPrefab  
 if GetModConfigData("chestwithsign") == 1 then
 	local function HasImage(item)
@@ -158,7 +164,7 @@ local wall_x = { 15.5, 5.5, 5.5, 5.5, 12.5, 5.5, 5.5, 5.5, 5.5, 5.5, 6.5, 7.5, 8
 local wall_z = { 14.5, -13.5, -14.5, -15.5, 14.5, -16.5, -19.5, -20.5, -21.5, -22.5, -22.5, -22.5, -22.5, -22.5, -22.5, -22.5, 4.5, 4.5, 3.5, 4.5, 2.5, -0.5, 0.5, 1.5, 2.5, -9.5, -22.5, -22.5, -22.5, -22.5, -22.5, -22.5, -22.5, -22.5, -21.5, -20.5, -19.5, -16.5, -15.5, -8.5, -9.5, -1.5, -0.5, -2.5, -2.5, -3.5, -4.5, -5.5, -3.5, -3.5, -2.5, -1.5, -6.5, -8.5, -6.5, -8.5, -8.5, -6.5, 2.5, -8.5, 2.5, -6.5, 3.5, -6.5, -8.5, -8.5, -6.5, -8.5, -7.5, -6.5, 14.5, 0.5, 1.5, -0.5, -1.5, -9.5, 14.5, 14.5, 13.5, 14.5, -9.5, -9.5, -9.5, 7.5, -9.5, -10.5, 14.5, -9.5, -9.5, -9.5, -8.5, -6.5, -5.5, -4.5, -3.5, -2.5, -1.5, -0.5, 0.5, 1.5, 2.5, 3.5, 4.5, -10.5, 4.5, -9.5, 5.5, -10.5, 6.5, -11.5, 7.5, -12.5, 8.5, -13.5, -13.5, -13.5, 11.5, 12.5, 13.5, -22.5, -13.5, -13.5, 14.5, 4.5, 14.5, 4.5, 4.5, 4.5, 4.5, 4.5, -13.5, -13.5, -13.5, -13.5, 5.5, -12.5, -10.5, -11.5, -12.5, 14.5, -13.5, 14.5, 4.5, -14.5, 14.5, -11.5, 14.5, -12.5, 12.5, 14.5, 11.5, 8.5, 6.5, 14.5, 14.5}
 local function MakeWall(basex, basez)
 	for i=1, 155, 1 do
-		local item = GLOBAL.DebugSpawn("virtualwall_stone")
+		local item = GLOBAL.DebugSpawn("virtual_wall_stone")
 		item.Transform:SetPosition(basex+wall_x[i], 0, basez+wall_z[i])
 	end
 end
@@ -193,10 +199,10 @@ if GLOBAL.TheNet and GLOBAL.TheNet:GetIsServer() then
 						for k,v in pairs(j.objects) do
 							tx = v.x/16 - delta + x
 							tz = v.y/16 - delta + z
-							local item = GLOBAL.DebugSpawn("virtual"..v.type)
+							local item = GLOBAL.DebugSpawn("virtual_"..v.type)
 							if item then 
 								item.Transform:SetPosition(tx, 0, tz)
-								if item.prefab == "virtuallightning_rod" then
+								if item.prefab == "virtual_lightning_rod" then
 									MakeWall(tx,tz)
 								end
 							else
