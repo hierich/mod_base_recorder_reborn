@@ -11,17 +11,17 @@ local CHARACTER_INGREDIENT = GLOBAL.CHARACTER_INGREDIENT
 local mylanguage = GetModConfigData("language") 
 if mylanguage == 1 then     
 	STRINGS.NAMES.VIRTUALSTRUCT_TAB = "Virtual Structure"     
-	-- STRINGS.NAMES.VIRTUALITEM_TAB = "Virtual Item" 
+ 
 else     
 	STRINGS.NAMES.VIRTUALSTRUCT_TAB = "虚拟建筑"     
-	-- STRINGS.NAMES.VIRTUALITEM_TAB = "虚拟物品" 
+
 end  
 
 -- the prefix is just for this mod
 local VIRTUAL_PREFIX = "virtual_"
 
 virtualtab = AddRecipeTab(STRINGS.NAMES.VIRTUALSTRUCT_TAB, 99, "images/hud/virtualtab.xml", "virtualtab.tex") 
--- virtualitemtab = AddRecipeTab(STRINGS.NAMES.VIRTUALITEM_TAB, 100, "images/hud/virtualtab.xml", "virtualtab.tex")  
+  
 TUNING.VIRTUALALPHA = GetModConfigData("alpha")  
 local color = GetModConfigData("color") 
 TUNING.VIRTUALRED = color / 100 
@@ -100,9 +100,14 @@ local function AddVirtualRecipe()
 	end 
 
 	-- add virtual wall, fence, gate
+	local MATERIALS = GLOBAL.MATERIALS
 	local virtual_wall_names = 
 	{
-		"wall_stone",
+		"wall_"..MATERIALS.STONE,
+		"wall_"..MATERIALS.WOOD,
+		"wall_"..MATERIALS.HAY,
+		"wall_ruins",
+		"wall_"..MATERIALS.MOONROCK,
 		"fence",
 		"fence_gate",
 	}
