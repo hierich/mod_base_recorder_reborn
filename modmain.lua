@@ -4,7 +4,8 @@ PrefabFiles =
 	"virtualwall",     
 	"virtualplantable",     
 	"virtualfence",
-	"camera" 
+	"vr_camera",
+	"vr_projector", 
 }  
 Assets = {      Asset( "ATLAS", "images/hud/virtualtab.xml" ),  }  
 
@@ -15,6 +16,8 @@ local Ingredient = GLOBAL.Ingredient
 local TECH = GLOBAL.TECH 
 local AllRecipes = GLOBAL.AllRecipes
 local CHARACTER_INGREDIENT = GLOBAL.CHARACTER_INGREDIENT
+local TUNING = GLOBAL.TUNING
+
 local mylanguage = GetModConfigData("language") 
 if mylanguage == 1 then     
 	STRINGS.NAMES.VIRTUALSTRUCT_TAB = "Virtual Structure"     
@@ -26,7 +29,7 @@ end
 
 -- the prefix is just for this mod
 local VIRTUAL_PREFIX = "virtual_"
-
+STRINGS.VIRTUAL_PREFIX = "virtual_"
 virtualtab = AddRecipeTab(STRINGS.NAMES.VIRTUALSTRUCT_TAB, 99, "images/hud/virtualtab.xml", "virtualtab.tex") 
 -- virtualitemtab = AddRecipeTab(STRINGS.NAMES.VIRTUALITEM_TAB, 100, "images/hud/virtualtab.xml", "virtualtab.tex")  
 TUNING.VIRTUALALPHA = GetModConfigData("alpha")  
@@ -215,3 +218,43 @@ if GLOBAL.TheNet and GLOBAL.TheNet:GetIsServer() then
 		end
 	end
 end
+
+GLOBAL.VR_File = 
+{
+
+	SaveTable = 
+	function(data, filepath)
+		if data and type(data) == "table" and filepath and type(filepath) == "string" then
+			GLOBAL.SavePersistentString(filepath, GLOBAL.DataDumper(data, nil, true), false, nil)
+			print("DATA HAS SAVED!")
+		else
+			print("Error type:"..type(data))
+		end
+	end
+	,
+
+ 	LoadTable = 
+ 	function(filepath)
+		local data = nil
+		GLOBAL.TheSim:GetPersistentString(filepath,
+			function(load_success, str)
+				if load_success == true then
+					local success, loaddata = GLOBAL.RunInSandboxSafe(str)
+					if success and string.len(str) > 0 then
+						data = loaddata
+					else
+						print ("[Virtual Reality] Could not load "..filepath)
+					end
+				else
+					print ("[Virtual Reality] Can not find "..filepath)
+				end
+			end
+		)
+		return data
+	end
+	,
+}
+
+
+
+

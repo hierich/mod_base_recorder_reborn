@@ -14,64 +14,56 @@ local prefabs =
 local record_path = "layout_record"
 local VIRTUAL_PREFIX = "virtual_"
 
-local function SaveTable(data, filepath)
-	if data and type(data) == "table" and filepath and type(filepath) == "string" then
-		SavePersistentString(filepath, DataDumper(data, nil, true), false, nil)
-		print("DATA HAS SAVED!")
-	else
-		print("Error type:"..type(data))
-	end
-end
 
-local function CanRecord(inst)
-	if inst.components.inventoryitem ~= nil then
+-- local function Id2Player(id) 
+-- 	local player = nil 
+-- 	for k, v in pairs(AllPlayers) do 
+-- 		if v.userid == id then player = v end 
+-- 	end 
+-- 	return player 
+-- end
+
+local function CanProject(inst)
+	if inst.name == nil or inst.x == nil or inst.y == nil or inst.z == nil or inst.orient == nil then -- check attributes complete
 		return false
 	end
-	if STRINGS.NAMES[string.upper(VIRTUAL_PREFIX..inst.prefab)] ~= nil then
+
+	if STRINGS.NAMES[string.upper(VIRTUAL_PREFIX..inst.name)] ~= nil then
 		return true
 	end
+
 	return false
 end
 
--- local AffineTransformation(pos, matrix_T)
-	
--- end
-
-local function Record(staff, target, pos)
-	local x = pos.x
-	local y = pos.y
-	local z = pos.z
-	local range = 20
-    local entity_list = TheSim:FindEntities(x, y, z, range)
-    local layout_record = {}
-    for i, entity in pairs(entity_list) do
-		if entity:IsValid() and CanRecord(entity) then
-			
-			local pos_in_world = Vector3(entity.Transform:GetWorldPosition())
-			local pos_in_camera = Vector3(pos_in_world.x-x, pos_in_world.y-y, pos_in_world.z-z)
-			local orient_in_world = entity.Transform:GetRotation()
-			local orient_in_camera = orient_in_world
-			local entity_record = 
-			{
-				name = entity.prefab,
-				x = pos_in_camera.x,
-				y = pos_in_camera.y,
-				z = pos_in_camera.z,
-				orient = orient_in_camera,
-			}
-			-- entity_record.name = entity.prefab
-			-- entity_record.pos = pos_in_camera
-			-- entity_record.orient = orient_in_world
-			-- local pos_in_camera = Vector3(pos_in_world.x-x, pos_in_world.y-y, pos_in_world.z-z)
-        	
-
-        	table.insert(layout_record, entity_record) 
-        	print("Record "..entity.prefab)
+local function Project(staff, target, pos)
+	-- if staff.components.owner == nil then
+	-- 	return
+	-- end
+	-- local user_id = staff.components.owner.userid
+	-- TUNING.VR_LAYOUT_RECORDS[user_id]
+	local layout_record = VR_File.LoadTable(record_path)
+	if type(layout_record) == "table" then
+		for k,inst in pairs(layout_record) do
+			if CanProject(inst) then
+				local virtual_thing = SpawnPrefab(VIRTUAL_PREFIX..inst.name)
+	        	if virtual_thing then
+				    local pt = Vector3(pos.x+inst.x, pos.y+inst.y, pos.z+inst.z)
+				    local oreint = inst.orient
+		            virtual_thing.Transform:SetPosition(pt:Get())
+		            virtual_thing.Transform:SetRotation(oreint)
+		        else
+		        	print("[VR] cannot spawn prefab")
+	        	end
+	        else
+	        	print("[VR] this prefab is not allowed to projected")
+	        end
 		end
-    end
-    SaveTable(layout_record, record_path)
-end
+	else
+		print("[VR] load data error")
+		print("data")
+	end	
 
+end
 
 local function fn(colour)
 
@@ -117,7 +109,7 @@ local function fn(colour)
     inst:AddComponent("inspectable")
  
     inst:AddComponent("spellcaster")
-    inst.components.spellcaster:SetSpellFn(Record)
+    inst.components.spellcaster:SetSpellFn(Project)
     inst.components.spellcaster.canuseonpoint =true
 
     MakeHauntableLaunch(inst) 
@@ -127,4 +119,4 @@ local function fn(colour)
 end
 
 
-return  Prefab("camera", fn, assets, prefabs)
+return  Prefab("vr_projector", fn, assets, prefabs)
