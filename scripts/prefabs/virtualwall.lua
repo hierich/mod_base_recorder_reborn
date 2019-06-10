@@ -1,8 +1,8 @@
 local assets = { }  
 local prefabs = {"collapse_small", }
  
-local VIRTUAL_PREFIX = "virtual_"
-
+-- local VIRTUAL_PREFIX = "virtual_"
+local VIRTUAL_PREFIX = STRINGS.VIRTUAL_PREFIX
 local function MakeWallType(data)
 
 	local function ondeploywall(inst, pt, deployer)         

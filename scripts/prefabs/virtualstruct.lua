@@ -1,7 +1,7 @@
 local assets = { }  
 local prefabs = {   "collapse_small", }  
-local VIRTUAL_PREFIX = "virtual_"
-
+-- local VIRTUAL_PREFIX = "virtual_"
+local VIRTUAL_PREFIX = STRINGS.VIRTUAL_PREFIX
 local function MakeVirtualStruct(name, bank, build, anim)     
 	local function onhammered(inst, worker)         
 		inst:Remove()     
@@ -11,9 +11,7 @@ local function MakeVirtualStruct(name, bank, build, anim)
 		local recipe = GetValidRecipe(name)         
 		local ret = false         
 		if recipe ~= nil then              
-			ret = doer.components.builder:IsBuildBuffered(name) or (doer.components.builder:CanBuild(name) and doer.components.builder:KnowsRecipe(name))         
-		else            
-			ret = doer.components.inventory:Has("dug_"..name,1)       
+			ret = doer.components.builder:IsBuildBuffered(name) or (doer.components.builder:CanBuild(name) and doer.components.builder:KnowsRecipe(name))                
 		end         
 		return ret     
 	end      

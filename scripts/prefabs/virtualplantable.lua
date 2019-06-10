@@ -1,5 +1,6 @@
 -- require "prefabutil"
-local VIRTUAL_PREFIX = "virtual_"
+-- local VIRTUAL_PREFIX = "virtual_"
+local VIRTUAL_PREFIX = STRINGS.VIRTUAL_PREFIX
 local function make_virtual_plantable(data)     
 	-- local assets ={Asset("ANIM", "anim/"..data.name..".zip"),}      
 	-- if data.build ~= nil then         

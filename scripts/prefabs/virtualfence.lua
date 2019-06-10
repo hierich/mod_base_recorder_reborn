@@ -1,5 +1,6 @@
 require "prefabutil"  
-local VIRTUAL_PREFIX = "virtual_"
+-- local VIRTUAL_PREFIX = "virtual_"
+local VIRTUAL_PREFIX = STRINGS.VIRTUAL_PREFIX
 local wall_prefabs = {   "collapse_small", }  
 local function CalcRotationEnum(rot, isdoor)     
 	return math.floor((math.floor(rot + 0.5) / 45) % (isdoor and 8 or 4)) 

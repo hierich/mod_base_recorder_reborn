@@ -12,8 +12,8 @@ local prefabs =
 }
 
 local record_path = "layout_record"
-local VIRTUAL_PREFIX = "virtual_"
-
+-- local VIRTUAL_PREFIX = "virtual_"
+local VIRTUAL_PREFIX = STRINGS.VIRTUAL_PREFIX
 -- local function SaveTable(data, filepath)
 -- 	if data and type(data) == "table" and filepath and type(filepath) == "string" then
 -- 		SavePersistentString(filepath, DataDumper(data, nil, true), false, nil)

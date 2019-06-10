@@ -12,8 +12,8 @@ local prefabs =
 }
 
 local record_path = "layout_record"
-local VIRTUAL_PREFIX = "virtual_"
-
+-- local VIRTUAL_PREFIX = "virtual_"
+local VIRTUAL_PREFIX = STRINGS.VIRTUAL_PREFIX
 
 -- local function Id2Player(id) 
 -- 	local player = nil 
@@ -28,11 +28,11 @@ local function CanProject(inst)
 		return false
 	end
 
-	if STRINGS.NAMES[string.upper(VIRTUAL_PREFIX..inst.name)] ~= nil then
-		return true
+	if STRINGS.NAMES[string.upper(VIRTUAL_PREFIX..inst.name)] == nil then
+		return false
 	end
 
-	return false
+	return true
 end
 
 local function Project(staff, target, pos)
@@ -42,15 +42,30 @@ local function Project(staff, target, pos)
 	-- local user_id = staff.components.owner.userid
 	-- TUNING.VR_LAYOUT_RECORDS[user_id]
 	local layout_record = VR_File.LoadTable(record_path)
+
+	-- use a dug_sapling to test if this place can be depolyed
+	local test_obj = SpawnPrefab("dug_sapling")
+	if test_obj == nil then
+		print("Cannot generate the test object")
+		return nil
+	end
 	if type(layout_record) == "table" then
+
 		for k,inst in pairs(layout_record) do
 			if CanProject(inst) then
 				local virtual_thing = SpawnPrefab(VIRTUAL_PREFIX..inst.name)
 	        	if virtual_thing then
 				    local pt = Vector3(pos.x+inst.x, pos.y+inst.y, pos.z+inst.z)
 				    local oreint = inst.orient
-		            virtual_thing.Transform:SetPosition(pt:Get())
-		            virtual_thing.Transform:SetRotation(oreint)
+				    local test = test_obj.components.deployable:CanDeploy(Point(pt.x, pt.y, pt.z))
+				    -- local test = true
+				    if test then
+				    	virtual_thing.Transform:SetPosition(pt:Get())
+		            	virtual_thing.Transform:SetRotation(oreint)
+		            else
+		            	virtual_thing:Remove()
+		            end
+ 
 		        else
 		        	print("[VR] cannot spawn prefab")
 	        	end
@@ -58,11 +73,48 @@ local function Project(staff, target, pos)
 	        	print("[VR] this prefab is not allowed to projected")
 	        end
 		end
+
 	else
 		print("[VR] load data error")
 		print("data")
 	end	
+	test_obj:Remove()
 
+end
+
+local function OnEnableHelper(inst, enabled)
+    if enabled then
+        if inst.helper == nil then
+            inst.helper = CreateEntity()
+
+            --[[Non-networked entity]]
+            inst.helper.entity:SetCanSleep(false)
+            inst.helper.persists = false
+
+            inst.helper.entity:AddTransform()
+            inst.helper.entity:AddAnimState()
+
+            inst.helper:AddTag("CLASSIFIED")
+            inst.helper:AddTag("NOCLICK")
+            inst.helper:AddTag("placer")
+
+            inst.helper.Transform:SetScale(PLACER_SCALE, PLACER_SCALE, PLACER_SCALE)
+
+            inst.helper.AnimState:SetBank("firefighter_placement")
+            inst.helper.AnimState:SetBuild("firefighter_placement")
+            inst.helper.AnimState:PlayAnimation("idle")
+            inst.helper.AnimState:SetLightOverride(1)
+            inst.helper.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
+            inst.helper.AnimState:SetLayer(LAYER_BACKGROUND)
+            inst.helper.AnimState:SetSortOrder(1)
+            inst.helper.AnimState:SetAddColour(0, .2, .5, 0)
+
+            inst.helper.entity:SetParent(inst.entity)
+        end
+    elseif inst.helper ~= nil then
+        inst.helper:Remove()
+        inst.helper = nil
+    end
 end
 
 local function fn(colour)

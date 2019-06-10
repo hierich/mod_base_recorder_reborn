@@ -28,8 +28,9 @@ else
 end  
 
 -- the prefix is just for this mod
-local VIRTUAL_PREFIX = "virtual_"
 STRINGS.VIRTUAL_PREFIX = "virtual_"
+local VIRTUAL_PREFIX = STRINGS.VIRTUAL_PREFIX
+
 virtualtab = AddRecipeTab(STRINGS.NAMES.VIRTUALSTRUCT_TAB, 99, "images/hud/virtualtab.xml", "virtualtab.tex") 
 -- virtualitemtab = AddRecipeTab(STRINGS.NAMES.VIRTUALITEM_TAB, 100, "images/hud/virtualtab.xml", "virtualtab.tex")  
 TUNING.VIRTUALALPHA = GetModConfigData("alpha")  
@@ -86,7 +87,7 @@ local function AddVirtualRecipe()
 		print(v)
 		local structure_recipe = AllRecipes[v]
 		if structure_recipe ~= nil then
-			AddRecipe(VIRTUAL_PREFIX..structure_recipe.name, {Ingredient(CHARACTER_INGREDIENT.SANITY, 0)}, virtualtab, TECH.NONE, structure_recipe.placer, structure_recipe.min_spacing, nil, nil, nil, nil, structure_recipe.image) 
+			AddRecipe(VIRTUAL_PREFIX..v, {Ingredient(CHARACTER_INGREDIENT.SANITY, 0)}, virtualtab, TECH.NONE, structure_recipe.placer, structure_recipe.min_spacing, nil, nil, nil, nil, structure_recipe.image) 
 		end
 	end
 
@@ -129,9 +130,16 @@ local function AddVirtualRecipe()
 		AddRecipe(VIRTUAL_PREFIX..v_item, {Ingredient(CHARACTER_INGREDIENT.SANITY, 0)}, virtualtab, TECH.NONE, nil,nil, nil, 50, nil, nil, v_item..".tex")
 	end
 
+	-- add vr projector 
+	STRINGS.NAMES[string.upper("vr_projector")] = "VR Projector"
+
+	-- add vr camera
+	STRINGS.NAMES[string.upper("vr_camera")] = "VR Camera"
 end
 -- add recipe
 AddVirtualRecipe()
+
+
 
 local require = GLOBAL.require
 local SpawnPrefab = GLOBAL.SpawnPrefab  
