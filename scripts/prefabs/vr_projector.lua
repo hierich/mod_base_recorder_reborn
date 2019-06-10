@@ -43,8 +43,8 @@ local function Project(staff, target, pos)
 	-- TUNING.VR_LAYOUT_RECORDS[user_id]
 	local layout_record = VR_File.LoadTable(record_path)
 
-	-- use a dug_sapling to test if this place can be depolyed
-	local test_obj = SpawnPrefab("dug_sapling")
+	-- use a stone wall item to test if this place can be depolyed
+	local test_obj = SpawnPrefab("wall_stone_item")
 	if test_obj == nil then
 		print("Cannot generate the test object")
 		return nil
@@ -57,7 +57,7 @@ local function Project(staff, target, pos)
 	        	if virtual_thing then
 				    local pt = Vector3(pos.x+inst.x, pos.y+inst.y, pos.z+inst.z)
 				    local oreint = inst.orient
-				    local test = test_obj.components.deployable:CanDeploy(Point(pt.x, pt.y, pt.z))
+				    local test = test_obj.components.deployable:CanDeploy(pt)
 				    -- local test = true
 				    if test then
 				    	virtual_thing.Transform:SetPosition(pt:Get())
