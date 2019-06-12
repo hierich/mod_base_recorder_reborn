@@ -5,8 +5,9 @@ PrefabFiles =
 	"virtualwall",     
 	"virtualplantable",     
 	"virtualfence",
+	"virtual_trap_teeth",
 	"vr_camera",
-	"vr_projector", 
+	"vr_projector",
 }  
 Assets = {      Asset( "ATLAS", "images/hud/virtualtab.xml" ),  }  
 
@@ -129,6 +130,18 @@ local function AddVirtualRecipe()
 		local v_item = v.."_item"
 		STRINGS.NAMES[string.upper(VIRTUAL_PREFIX..v_item)] = "Virtual "..STRINGS.NAMES[string.upper(v_item)]
 		AddRecipe(VIRTUAL_PREFIX..v_item, {Ingredient(CHARACTER_INGREDIENT.SANITY, 0)}, virtualtab, TECH.NONE, nil,nil, nil, 50, nil, nil, v_item..".tex")
+	end
+
+	-- add virtual minetraps
+	local virtual_minetrap_names = 
+	{
+		"trap_teeth",
+	} 
+
+	for k, v in pairs(virtual_minetrap_names) do
+		STRINGS.NAMES[string.upper(VIRTUAL_PREFIX..v)] = "Virtual "..STRINGS.NAMES[string.upper(v)]
+		-- not allowed to build virtual trap
+		-- AddRecipe(VIRTUAL_PREFIX..v, {Ingredient(CHARACTER_INGREDIENT.SANITY, 0)}, virtualtab, TECH.NONE, structure_recipe.placer, GLOBAL.DEPLOYSPACING.LESS, nil, nil, nil, nil, structure_recipe.image)
 	end
 
 	-- add vr projector 

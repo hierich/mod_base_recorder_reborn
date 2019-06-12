@@ -43,7 +43,7 @@ local VIRTUAL_PREFIX = STRINGS.VIRTUAL_PREFIX
 -- end
 
 local function CanRecord(inst)
-	if inst.components.inventoryitem ~= nil then
+	if inst.components.inventoryitem ~= nil and not inst:HasTag("trap") then
 		return false
 	end
 	if STRINGS.NAMES[string.upper(VIRTUAL_PREFIX..inst.prefab)] ~= nil then

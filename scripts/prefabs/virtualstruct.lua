@@ -105,4 +105,5 @@ MakeVirtualStruct("sentryward","sentryward","sentryward","idle_full"),
 MakeVirtualStruct("moondial","moondial","moondial_build","idle_new"),     
 MakeVirtualStruct("townportal","townportal","townportal","idle"),      
 -- MakeVirtualStruct("firesuppressor","firefighter","firefighter","idle_off"),
-MakeVirtualStruct("fast_farmplot","farmplot","farmplot","full")     
+MakeVirtualStruct("fast_farmplot","farmplot","farmplot","full"),
+MakeVirtualStruct("trap_teeth","trap_teeth","trap_teeth","idle")     
