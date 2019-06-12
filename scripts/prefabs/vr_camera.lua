@@ -11,7 +11,7 @@ local prefabs =
 {		
 }
 
-local record_path = "layout_record"
+local record_path = STRINGS.VR_RECORD_PATH
 -- local VIRTUAL_PREFIX = "virtual_"
 local VIRTUAL_PREFIX = STRINGS.VIRTUAL_PREFIX
 -- local function SaveTable(data, filepath)
@@ -46,6 +46,11 @@ local function CanRecord(inst)
 	if inst.components.inventoryitem ~= nil and not inst:HasTag("trap") then
 		return false
 	end
+    
+    if inst.prefab == nil then
+        return false
+    end
+    
 	if STRINGS.NAMES[string.upper(VIRTUAL_PREFIX..inst.prefab)] ~= nil then
 		return true
 	end

@@ -11,7 +11,7 @@ local prefabs =
 {		
 }
 
-local record_path = "layout_record"
+local record_path = STRINGS.VR_RECORD_PATH
 -- local VIRTUAL_PREFIX = "virtual_"
 local VIRTUAL_PREFIX = STRINGS.VIRTUAL_PREFIX
 
