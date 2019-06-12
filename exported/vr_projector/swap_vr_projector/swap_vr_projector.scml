@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="swap_vr_projector">
+        <file id="0" name="swap_vr_projector/projector.png" width="176" height="177" pivot_x="0.538061" pivot_y="0.324512"/>
+    </folder>
+    <entity id="0" name="swap_vr_projector">
+        <animation id="0" name="BUILD" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="projector" folder="0" file="0" abs_x="1.277728" abs_y="15.964962" abs_pivot_x="0.538061" abs_pivot_y="0.324512" abs_angle="339.367089" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="projector">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="1.277728" y="15.964962" angle="339.367089"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>

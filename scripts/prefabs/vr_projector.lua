@@ -1,10 +1,10 @@
 local assets=
 { 
-    Asset("ANIM", "anim/cleanupwand.zip"),
-    Asset("ANIM", "anim/swap_cleanupwand.zip"), 
+    Asset("ANIM", "anim/vr_projector.zip"),
+    Asset("ANIM", "anim/swap_vr_projector.zip"), 
 
-    Asset("ATLAS", "images/inventoryimages/cleanupwand.xml"),
-    Asset("IMAGE", "images/inventoryimages/cleanupwand.tex"),
+    Asset("ATLAS", "images/inventoryimages/vr_projector.xml"),
+    Asset("IMAGE", "images/inventoryimages/vr_projector.tex"),
 }
 
 local prefabs = 
@@ -121,7 +121,7 @@ local function fn(colour)
 
     local function OnEquip(inst, owner) 
         --owner.AnimState:OverrideSymbol("swap_object", "swap_wands", "purplestaff")
-        owner.AnimState:OverrideSymbol("swap_object", "swap_cleanupwand", "wand")
+        owner.AnimState:OverrideSymbol("swap_object", "swap_vr_projector", "swap_vr_projector")
         owner.AnimState:Show("ARM_carry") 
         owner.AnimState:Hide("ARM_normal") 
 
@@ -140,8 +140,8 @@ local function fn(colour)
     inst.entity:AddNetwork()
     MakeInventoryPhysics(inst)
     
-    anim:SetBank("cleanupwand")
-    anim:SetBuild("cleanupwand")
+    anim:SetBank("vr_projector")
+    anim:SetBuild("vr_projector")
     anim:PlayAnimation("idle")
 
     if not TheWorld.ismastersim then   
@@ -151,8 +151,8 @@ local function fn(colour)
     inst.entity:SetPristine()
 
     inst:AddComponent("inventoryitem")
-    inst.components.inventoryitem.imagename = "cleanupwand"
-    inst.components.inventoryitem.atlasname = "images/inventoryimages/cleanupwand.xml"
+    inst.components.inventoryitem.imagename = "vr_projector"
+    inst.components.inventoryitem.atlasname = "images/inventoryimages/vr_projector.xml"
     
     inst:AddComponent("equippable")
     inst.components.equippable:SetOnEquip( OnEquip )

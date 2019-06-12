@@ -1,6 +1,7 @@
 PrefabFiles = 
 { 
-	"virtualstruct",     
+	"virtualstruct", 
+	"virtualfiresuppressor",    
 	"virtualwall",     
 	"virtualplantable",     
 	"virtualfence",

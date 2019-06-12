@@ -1,6 +1,7 @@
 local assets = { }  
 local prefabs = {  "firesuppressor_glow", }  
 local PLACER_SCALE = 1.55  
+local VIRTUAL_PREFIX = STRINGS.VIRTUAL_PREFIX
 local function OnEnableHelper(inst, enabled)     
 	if enabled then         
 		if inst.helper == nil then             
@@ -98,4 +99,4 @@ local function fn()
 	return inst 
 end  
 
-return Prefab("virtualfiresuppressor", fn, assets, prefabs)
+return Prefab(VIRTUAL_PREFIX.."firesuppressor", fn, assets, prefabs)
