@@ -1,4 +1,4 @@
-name = "Base Recorder Reborn" 
+name = "Base Recorder Reborn dev" 
 description = "可以预先建造虚拟建筑进行规划\n"..
 	"用照相机和投影仪来记录，投影你的基地\n"..
 	"可选择颜色和透明度\n"..
