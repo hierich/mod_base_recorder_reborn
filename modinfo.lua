@@ -1,12 +1,12 @@
-name = "Virtual Reality" 
+name = "Base Recorder Reborn" 
 description = "可以预先建造虚拟建筑进行规划\n"..
 	"用照相机和投影仪来记录，投影你的基地\n"..
 	"可选择颜色和透明度\n"..
 	"You can make virtual structure for future plan.\n"..
-	"Use camera and projector to record, project your base.\n"..
+	"Use the camera and the projector to record, project your base.\n"..
 	"You can choose color and alpha." 
 author = "Heinrich" 
-version = "1.7"   
+version = "1.0"   
 forumthread = ""  
 api_version = 10  
 dst_compatible = true  
@@ -17,16 +17,16 @@ icon_atlas = "modicon.xml"
 icon = "modicon.tex"  
 server_filter_tags = {     "virtual structure", }  
 configuration_options = {
--- {     
--- 	name = "language",
--- 	label = "语言language",
--- 	options =
--- 	{
--- 		{description = "English", data = 1},
--- 		{description = "中文", data = 2},
--- 	},
--- 	default = 2,
--- }, 
+{     
+	name = "language",
+	label = "语言language",
+	options =
+	{
+		{description = "English", data = 1},
+		{description = "中文", data = 2},
+	},
+	default = 1,
+}, 
 {   
 	name = "alpha",
 	label = "不透明度alpha",
