@@ -140,8 +140,8 @@ local function AddVirtualRecipe()
 
 	for k, v in pairs(virtual_minetrap_names) do
 		STRINGS.NAMES[string.upper(VIRTUAL_PREFIX..v)] = "Virtual "..STRINGS.NAMES[string.upper(v)]
-		-- not allowed to build virtual trap
-		-- AddRecipe(VIRTUAL_PREFIX..v, {Ingredient(CHARACTER_INGREDIENT.SANITY, 0)}, virtualtab, TECH.NONE, structure_recipe.placer, GLOBAL.DEPLOYSPACING.LESS, nil, nil, nil, nil, structure_recipe.image)
+		STRINGS.NAMES[string.upper(VIRTUAL_PREFIX..v.."_item")] = "Virtual "..STRINGS.NAMES[string.upper(v)]
+		AddRecipe(VIRTUAL_PREFIX..v.."_item", {Ingredient(CHARACTER_INGREDIENT.SANITY, 0)}, virtualtab, TECH.NONE, nil,nil, nil, 50, nil, nil, v..".tex")
 	end
 
 	-- add vr projector 
