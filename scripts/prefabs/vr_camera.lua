@@ -61,7 +61,7 @@ end
 	
 -- end
 
-local function Record(staff, target, pos)
+local function Record(pos)
 	local x = pos.x
 	local y = pos.y
 	local z = pos.z
@@ -96,6 +96,18 @@ local function Record(staff, target, pos)
     VR_File.SaveTable(layout_record, record_path)
 end
 
+
+local function ondeploy(inst, pt, deployer)
+    local x,y,z = pt:Get()
+    x = math.floor(x)+0.5
+    y = math.floor(y)+0.5
+    z = math.floor(z)+0.5
+    inst.AnimState:PlayAnimation("work")
+    inst.Transform:SetPosition(x,y,z)   
+    Record(pt)
+    -- local sign = SpawnPrefab("wall_stone")
+    -- sign.Transform:SetPosition(x+20,y,z)
+end
 
 local function fn(colour)
 
@@ -134,21 +146,54 @@ local function fn(colour)
     inst.components.inventoryitem.imagename = "vr_camera"
     inst.components.inventoryitem.atlasname = "images/inventoryimages/vr_camera.xml"
     
-    inst:AddComponent("equippable")
-    inst.components.equippable:SetOnEquip( OnEquip )
-    inst.components.equippable:SetOnUnequip( OnUnequip )
+    -- inst:AddComponent("equippable")
+    -- inst.components.equippable:SetOnEquip( OnEquip )
+    -- inst.components.equippable:SetOnUnequip( OnUnequip )
 
-    inst:AddComponent("inspectable")
+    -- inst:AddComponent("inspectable")
  
-    inst:AddComponent("spellcaster")
-    inst.components.spellcaster:SetSpellFn(Record)
-    inst.components.spellcaster.canuseonpoint =true
+    -- inst:AddComponent("spellcaster")
+    -- inst.components.spellcaster:SetSpellFn(Record)
+    -- inst.components.spellcaster.canuseonpoint =true
 
-    MakeHauntableLaunch(inst) 
+    inst:AddComponent("deployable")
+    inst.components.deployable.ondeploy = ondeploy
+    inst.components.deployable:SetDeployMode(DEPLOYMODE.ANYWHERE)
+
+    -- MakeHauntableLaunch(inst) 
 
 
     return inst
 end
 
+local PLACER_SCALE = 1.75
 
-return  Prefab("vr_camera", fn, assets, prefabs)
+local function placer_postinit_fn(inst)
+
+    local placer2 = CreateEntity()
+
+    placer2.entity:SetCanSleep(false)
+    placer2.persists = false
+
+    placer2.entity:AddTransform()
+    placer2.entity:AddAnimState()
+
+    placer2:AddTag("CLASSIFIED")
+    placer2:AddTag("NOCLICK")
+    placer2:AddTag("placer")
+
+    local s = 1 / PLACER_SCALE
+    placer2.Transform:SetScale(s, s, s)
+
+    placer2.AnimState:SetBank("vr_camera")
+    placer2.AnimState:SetBuild("vr_camera")
+    placer2.AnimState:PlayAnimation("idle")
+    placer2.AnimState:SetLightOverride(1)
+
+    placer2.entity:SetParent(inst.entity)
+
+    inst.components.placer:LinkEntity(placer2)
+end
+
+return  Prefab("vr_camera", fn, assets, prefabs),
+    MakePlacer("vr_camera_placer", "firefighter_placement", "firefighter_placement", "idle", true, nil, nil, PLACER_SCALE, nil, nil, placer_postinit_fn)

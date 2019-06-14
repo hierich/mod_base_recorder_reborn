@@ -35,7 +35,7 @@ local function CanProject(inst)
 	return true
 end
 
-local function Project(staff, target, pos)
+local function Project(pos)
 	-- if staff.components.owner == nil then
 	-- 	return
 	-- end
@@ -82,39 +82,15 @@ local function Project(staff, target, pos)
 
 end
 
-local function OnEnableHelper(inst, enabled)
-    if enabled then
-        if inst.helper == nil then
-            inst.helper = CreateEntity()
 
-            --[[Non-networked entity]]
-            inst.helper.entity:SetCanSleep(false)
-            inst.helper.persists = false
-
-            inst.helper.entity:AddTransform()
-            inst.helper.entity:AddAnimState()
-
-            inst.helper:AddTag("CLASSIFIED")
-            inst.helper:AddTag("NOCLICK")
-            inst.helper:AddTag("placer")
-
-            inst.helper.Transform:SetScale(PLACER_SCALE, PLACER_SCALE, PLACER_SCALE)
-
-            inst.helper.AnimState:SetBank("firefighter_placement")
-            inst.helper.AnimState:SetBuild("firefighter_placement")
-            inst.helper.AnimState:PlayAnimation("idle")
-            inst.helper.AnimState:SetLightOverride(1)
-            inst.helper.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
-            inst.helper.AnimState:SetLayer(LAYER_BACKGROUND)
-            inst.helper.AnimState:SetSortOrder(1)
-            inst.helper.AnimState:SetAddColour(0, .2, .5, 0)
-
-            inst.helper.entity:SetParent(inst.entity)
-        end
-    elseif inst.helper ~= nil then
-        inst.helper:Remove()
-        inst.helper = nil
-    end
+local function ondeploy(inst, pt, deployer)
+    local x,y,z = pt:Get()
+    x = math.floor(x)+0.5
+    y = math.floor(y)+0.5
+    z = math.floor(z)+0.5
+    inst.AnimState:PlayAnimation("work")
+    inst.Transform:SetPosition(x,y,z)   
+    Project(pt)
 end
 
 local function fn(colour)
@@ -132,6 +108,8 @@ local function fn(colour)
         owner.AnimState:Show("ARM_normal") 
 
     end
+
+
 
     local inst = CreateEntity()
     local trans = inst.entity:AddTransform()
@@ -154,21 +132,53 @@ local function fn(colour)
     inst.components.inventoryitem.imagename = "vr_projector"
     inst.components.inventoryitem.atlasname = "images/inventoryimages/vr_projector.xml"
     
-    inst:AddComponent("equippable")
-    inst.components.equippable:SetOnEquip( OnEquip )
-    inst.components.equippable:SetOnUnequip( OnUnequip )
+    -- inst:AddComponent("equippable")
+    -- inst.components.equippable:SetOnEquip( OnEquip )
+    -- inst.components.equippable:SetOnUnequip( OnUnequip )
 
-    inst:AddComponent("inspectable")
+    -- inst:AddComponent("inspectable")
  
-    inst:AddComponent("spellcaster")
-    inst.components.spellcaster:SetSpellFn(Project)
-    inst.components.spellcaster.canuseonpoint =true
+    -- inst:AddComponent("spellcaster")
+    -- inst.components.spellcaster:SetSpellFn(Project)
+    -- inst.components.spellcaster.canuseonpoint =true
 
-    MakeHauntableLaunch(inst) 
+    inst:AddComponent("deployable")
+    inst.components.deployable.ondeploy = ondeploy
+    inst.components.deployable:SetDeployMode(DEPLOYMODE.ANYWHERE)
+    -- MakeHauntableLaunch(inst) 
 
 
     return inst
 end
 
+local PLACER_SCALE = 1.75
 
-return  Prefab("vr_projector", fn, assets, prefabs)
+local function placer_postinit_fn(inst)
+
+    local placer2 = CreateEntity()
+
+    placer2.entity:SetCanSleep(false)
+    placer2.persists = false
+
+    placer2.entity:AddTransform()
+    placer2.entity:AddAnimState()
+
+    placer2:AddTag("CLASSIFIED")
+    placer2:AddTag("NOCLICK")
+    placer2:AddTag("placer")
+
+    local s = 1 / PLACER_SCALE
+    placer2.Transform:SetScale(s, s, s)
+
+    placer2.AnimState:SetBank("vr_projector")
+    placer2.AnimState:SetBuild("vr_projector")
+    placer2.AnimState:PlayAnimation("idle")
+    placer2.AnimState:SetLightOverride(1)
+
+    placer2.entity:SetParent(inst.entity)
+
+    inst.components.placer:LinkEntity(placer2)
+end
+
+return  Prefab("vr_projector", fn, assets, prefabs),
+    MakePlacer("vr_projector_placer", "firefighter_placement", "firefighter_placement", "idle", true, nil, nil, PLACER_SCALE, nil, nil, placer_postinit_fn)

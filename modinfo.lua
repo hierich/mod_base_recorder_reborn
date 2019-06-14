@@ -6,7 +6,7 @@ description = "可以预先建造虚拟建筑进行规划\n"..
 	"Use the camera and the projector to record, project your base.\n"..
 	"You can choose color and alpha." 
 author = "Heinrich" 
-version = "1.1"   
+version = "1.2"   
 forumthread = ""  
 api_version = 10  
 dst_compatible = true  
