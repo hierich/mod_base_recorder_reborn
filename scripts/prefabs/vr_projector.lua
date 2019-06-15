@@ -23,6 +23,11 @@ local VIRTUAL_PREFIX = STRINGS.VIRTUAL_PREFIX
 -- 	return player 
 -- end
 
+------------------------------------ setting ------------------------------------
+-- recipe
+-- local vr_projector = Recipe("vr_projector", {Ingredient("charcoal", 4), Ingredient("deerclops_eyeball", 1), Ingredient("transistor", 2)}, RECIPETABS[STRINGS.NAMES.VIRTUAL_TAB], TECH.NONE)
+-- vr_projector.atlas = "images/inventoryimages/vr_projector.xml"
+------------------------------------ entity ------------------------------------
 local function CanProject(inst)
 	if inst.name == nil or inst.x == nil or inst.y == nil or inst.z == nil or inst.orient == nil then -- check attributes complete
 		return false
@@ -41,7 +46,19 @@ local function Project(pos)
 	-- end
 	-- local user_id = staff.components.owner.userid
 	-- TUNING.VR_LAYOUT_RECORDS[user_id]
-	local layout_record = VR_File.LoadTable(record_path)
+	local baseplan = VR_File.LoadTable(record_path)
+    local title = nil
+    local layout_record = nil
+    if baseplan.title == nil then
+        print("title missed")
+        title = "missed"
+        layout_record = baseplan
+    else
+        title = baseplan.title
+        layout_record = baseplan.layout_record
+    end
+
+    
 
 	-- use a stone wall item to test if this place can be depolyed
 	local test_obj = SpawnPrefab("wall_stone_item")
@@ -76,7 +93,6 @@ local function Project(pos)
 
 	else
 		print("[VR] load data error")
-		print("data")
 	end	
 	test_obj:Remove()
 

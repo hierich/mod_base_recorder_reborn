@@ -9,7 +9,14 @@ PrefabFiles =
 	"vr_camera",
 	"vr_projector",
 }  
-Assets = {      Asset( "ATLAS", "images/hud/virtualtab.xml" ),  }  
+Assets = 
+{     
+	Asset( "ATLAS", "images/hud/virtualtab.xml" ),
+	-- Asset("ATLAS", "images/inventoryimages/vr_projector.xml"),
+ --    Asset("IMAGE", "images/inventoryimages/vr_projector.tex"),
+    -- Asset("ATLAS", "images/inventoryimages/vr_camera.xml"),
+ --    Asset("IMAGE", "images/inventoryimages/vr_camera.tex"),
+}  
 
 local STRINGS = GLOBAL.STRINGS 
 local RECIPETABS = GLOBAL.RECIPETABS 
@@ -21,19 +28,21 @@ local CHARACTER_INGREDIENT = GLOBAL.CHARACTER_INGREDIENT
 local TUNING = GLOBAL.TUNING
 
 local mylanguage = GetModConfigData("language") 
-if mylanguage == 1 then     
-	STRINGS.NAMES.VIRTUALSTRUCT_TAB = "Virtual Structure"     
-	-- STRINGS.NAMES.VIRTUALITEM_TAB = "Virtual Item" 
-else     
-	STRINGS.NAMES.VIRTUALSTRUCT_TAB = "虚拟建筑"     
-	-- STRINGS.NAMES.VIRTUALITEM_TAB = "虚拟物品" 
-end  
+STRINGS.NAMES.VIRTUAL_TAB = "Virtual" 
+-- if mylanguage == 1 then     
+-- 	STRINGS.NAMES.VIRTUAL_TAB = "Virtual"     
+-- 	-- STRINGS.NAMES.VIRTUALITEM_TAB = "Virtual Item" 
+-- else     
+-- 	STRINGS.NAMES.VIRTUAL_TAB = "虚拟造物"     
+-- 	-- STRINGS.NAMES.VIRTUALITEM_TAB = "虚拟物品" 
+-- end  
 
 -- the prefix is just for this mod
 STRINGS.VIRTUAL_PREFIX = "virtual_"
 local VIRTUAL_PREFIX = STRINGS.VIRTUAL_PREFIX
 STRINGS.VR_RECORD_PATH = "mod_config_data/vr_record"
-virtualtab = AddRecipeTab(STRINGS.NAMES.VIRTUALSTRUCT_TAB, 99, "images/hud/virtualtab.xml", "virtualtab.tex") 
+local virtualtab = AddRecipeTab(STRINGS.NAMES.VIRTUAL_TAB, 99, "images/hud/virtualtab.xml", "virtualtab.tex")
+print("add virtual tab") 
 -- virtualitemtab = AddRecipeTab(STRINGS.NAMES.VIRTUALITEM_TAB, 100, "images/hud/virtualtab.xml", "virtualtab.tex")  
 TUNING.VIRTUALALPHA = GetModConfigData("alpha")  
 local color = GetModConfigData("color") 
@@ -44,6 +53,15 @@ TUNING.VIRTUALBLUE = color%10
 
 local function AddVirtualRecipe()
 	-- add virtual recipes one by one
+	
+	-- add vr projector 
+	STRINGS.NAMES[string.upper("vr_projector")] = "VR Projector"
+	local vr_projector = AddRecipe("vr_projector", {Ingredient("charcoal", 4), Ingredient("deerclops_eyeball", 1), Ingredient("transistor", 2)}, virtualtab, TECH.NONE)
+	vr_projector.atlas = "images/inventoryimages/vr_projector.xml"
+	-- add vr camera
+	STRINGS.NAMES[string.upper("vr_camera")] = "VR Camera"
+	local vr_camera = AddRecipe("vr_camera", {Ingredient("ice", 10), Ingredient("deerclops_eyeball", 1), Ingredient("rocks", 8)}, virtualtab, TECH.NONE)
+	vr_camera.atlas = "images/inventoryimages/vr_camera.xml"
 
 	-- add virtual structure
 	local virtual_structure_names = 
@@ -144,11 +162,6 @@ local function AddVirtualRecipe()
 		AddRecipe(VIRTUAL_PREFIX..v.."_item", {Ingredient(CHARACTER_INGREDIENT.SANITY, 0)}, virtualtab, TECH.NONE, nil,nil, nil, 50, nil, nil, v..".tex")
 	end
 
-	-- add vr projector 
-	STRINGS.NAMES[string.upper("vr_projector")] = "VR Projector"
-
-	-- add vr camera
-	STRINGS.NAMES[string.upper("vr_camera")] = "VR Camera"
 end
 -- add recipe
 AddVirtualRecipe()

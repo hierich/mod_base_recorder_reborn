@@ -41,7 +41,13 @@ local VIRTUAL_PREFIX = STRINGS.VIRTUAL_PREFIX
 -- 	)
 -- 	return data
 -- end
+------------------------------------ setting ------------------------------------
 
+
+-- local vr_camera = Recipe("vr_camera", {Ingredient("ice", 10), Ingredient("deerclops_eyeball", 1), Ingredient("rocks", 8)}, RECIPETABS[STRINGS.NAMES.VIRTUAL_TAB], TECH.NONE)
+-- print("add recipe")
+-- vr_camera.atlas = "images/inventoryimages/vr_camera.xml"
+------------------------------------ entity ------------------------------------
 local function CanRecord(inst)
 	if inst.components.inventoryitem ~= nil and not inst:HasTag("trap") then
 		return false
@@ -67,7 +73,9 @@ local function Record(pos)
 	local z = pos.z
 	local range = 20
     local entity_list = TheSim:FindEntities(x, y, z, range)
+    local baseplan = {title = "",}
     local layout_record = {}
+    baseplan.layout_record = layout_record
     for i, entity in pairs(entity_list) do
 		if entity:IsValid() and CanRecord(entity) then
 			
@@ -93,7 +101,8 @@ local function Record(pos)
         	print("Record "..entity.prefab)
 		end
     end
-    VR_File.SaveTable(layout_record, record_path)
+
+    VR_File.SaveTable(baseplan, record_path)
 end
 
 
