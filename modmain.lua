@@ -1,60 +1,74 @@
-PrefabFiles = 
-{ 
-	"virtualstruct", 
-	"virtualfiresuppressor",    
-	"virtualwall",     
-	"virtualplantable",     
+
+PrefabFiles =
+{
+	"virtualstruct",
+	"virtualfiresuppressor",
+	"virtualwall",
+	"virtualplantable",
 	"virtualfence",
 	"virtual_trap_teeth",
 	"vr_camera",
 	"vr_projector",
-}  
-Assets = 
-{     
+}
+Assets =
+{
 	Asset( "ATLAS", "images/hud/virtualtab.xml" ),
 	-- Asset("ATLAS", "images/inventoryimages/vr_projector.xml"),
  --    Asset("IMAGE", "images/inventoryimages/vr_projector.tex"),
     -- Asset("ATLAS", "images/inventoryimages/vr_camera.xml"),
  --    Asset("IMAGE", "images/inventoryimages/vr_camera.tex"),
-}  
+}
 
-local STRINGS = GLOBAL.STRINGS 
-local RECIPETABS = GLOBAL.RECIPETABS 
-local Recipe = GLOBAL.Recipe 
-local Ingredient = GLOBAL.Ingredient 
-local TECH = GLOBAL.TECH 
+local STRINGS = GLOBAL.STRINGS
+local RECIPETABS = GLOBAL.RECIPETABS
+local Recipe = GLOBAL.Recipe
+local Ingredient = GLOBAL.Ingredient
+local TECH = GLOBAL.TECH
 local AllRecipes = GLOBAL.AllRecipes
 local CHARACTER_INGREDIENT = GLOBAL.CHARACTER_INGREDIENT
 local TUNING = GLOBAL.TUNING
 
-local mylanguage = GetModConfigData("language") 
-STRINGS.NAMES.VIRTUAL_TAB = "Virtual" 
--- if mylanguage == 1 then     
--- 	STRINGS.NAMES.VIRTUAL_TAB = "Virtual"     
--- 	-- STRINGS.NAMES.VIRTUALITEM_TAB = "Virtual Item" 
--- else     
--- 	STRINGS.NAMES.VIRTUAL_TAB = "虚拟造物"     
--- 	-- STRINGS.NAMES.VIRTUALITEM_TAB = "虚拟物品" 
--- end  
+
+-----------------------config---------------------------
+
+local mylanguage = GetModConfigData("language")
+
+-- if mylanguage == 1 then
+-- 	STRINGS.NAMES.VIRTUAL_TAB = "Virtual"
+-- 	-- STRINGS.NAMES.VIRTUALITEM_TAB = "Virtual Item"
+-- else
+-- 	STRINGS.NAMES.VIRTUAL_TAB = "虚拟造物"
+-- 	-- STRINGS.NAMES.VIRTUALITEM_TAB = "虚拟物品"
+-- end
 
 -- the prefix is just for this mod
-STRINGS.VIRTUAL_PREFIX = "virtual_"
-local VIRTUAL_PREFIX = STRINGS.VIRTUAL_PREFIX
-STRINGS.VR_RECORD_PATH = "mod_config_data/vr_record"
-local virtualtab = AddRecipeTab(STRINGS.NAMES.VIRTUAL_TAB, 99, "images/hud/virtualtab.xml", "virtualtab.tex")
-print("add virtual tab") 
--- virtualitemtab = AddRecipeTab(STRINGS.NAMES.VIRTUALITEM_TAB, 100, "images/hud/virtualtab.xml", "virtualtab.tex")  
-TUNING.VIRTUALALPHA = GetModConfigData("alpha")  
-local color = GetModConfigData("color") 
-TUNING.VIRTUALRED = color / 100 
-TUNING.VIRTUALGREEN = (color/10)%10 
+
+
+
+TUNING.VIRTUALALPHA = GetModConfigData("alpha")
+local color = GetModConfigData("color")
+TUNING.VIRTUALRED = color / 100
+TUNING.VIRTUALGREEN = (color/10)%10
 TUNING.VIRTUALBLUE = color%10
 
 
+STRINGS.VIRTUAL_PREFIX = "virtual_"
+local VIRTUAL_PREFIX = STRINGS.VIRTUAL_PREFIX
+STRINGS.VR_RECORD_PATH = "mod_config_data/vr_record"
+STRINGS.NAMES.VIRTUAL_TAB = "Virtual"
+
+-------------------------util--------------------------
+modimport("scripts/vrUtils.lua")
+
+
+-------------------------addd recipe----------------------
 local function AddVirtualRecipe()
+	local virtualtab = AddRecipeTab(STRINGS.NAMES.VIRTUAL_TAB, 99, "images/hud/virtualtab.xml", "virtualtab.tex")
+	print("add virtual tab")
+
 	-- add virtual recipes one by one
-	
-	-- add vr projector 
+
+	-- add vr projector
 	STRINGS.NAMES[string.upper("vr_projector")] = "VR Projector"
 	local vr_projector = AddRecipe("vr_projector", {Ingredient("charcoal", 4), Ingredient("deerclops_eyeball", 1), Ingredient("transistor", 2)}, virtualtab, TECH.NONE)
 	vr_projector.atlas = "images/inventoryimages/vr_projector.xml"
@@ -64,7 +78,7 @@ local function AddVirtualRecipe()
 	vr_camera.atlas = "images/inventoryimages/vr_camera.xml"
 
 	-- add virtual structure
-	local virtual_structure_names = 
+	local virtual_structure_names =
 	{
 		"firepit",
 		"coldfirepit",
@@ -104,15 +118,15 @@ local function AddVirtualRecipe()
 
 	for k, v in pairs(virtual_structure_names) do
 		STRINGS.NAMES[string.upper(VIRTUAL_PREFIX..v)] = "Virtual "..STRINGS.NAMES[string.upper(v)]
-		print(v)
+
 		local structure_recipe = AllRecipes[v]
 		if structure_recipe ~= nil then
-			AddRecipe(VIRTUAL_PREFIX..v, {Ingredient(CHARACTER_INGREDIENT.SANITY, 0)}, virtualtab, TECH.NONE, structure_recipe.placer, structure_recipe.min_spacing, nil, nil, nil, nil, structure_recipe.image) 
+			AddRecipe(VIRTUAL_PREFIX..v, {Ingredient(CHARACTER_INGREDIENT.SANITY, 0)}, virtualtab, TECH.NONE, structure_recipe.placer, structure_recipe.min_spacing, nil, nil, nil, nil, structure_recipe.image)
 		end
 	end
 
 	-- add virtual plantable
-	local virtual_plantable_names = 
+	local virtual_plantable_names =
 	{
 		"grass",
 		"sapling",
@@ -120,19 +134,19 @@ local function AddVirtualRecipe()
 		"berrybush2",
 		"berrybush_juicy",
 		"marsh_bush",
-	} 
+	}
 
 	for k, v in pairs(virtual_plantable_names) do
 		STRINGS.NAMES[string.upper(VIRTUAL_PREFIX..v)] = "Virtual "..STRINGS.NAMES[string.upper(v)]
-		
+
 		local dug_v = "dug_"..v
 		STRINGS.NAMES[string.upper(VIRTUAL_PREFIX..dug_v)] = "Virtual "..STRINGS.NAMES[string.upper(dug_v)]
 		AddRecipe(VIRTUAL_PREFIX..dug_v, {Ingredient(CHARACTER_INGREDIENT.SANITY, 0)}, virtualtab, TECH.NONE, nil,nil, nil, 50, nil, nil, dug_v..".tex")
-	end 
+	end
 
 	-- add virtual wall, fence, gate
 	local MATERIALS = GLOBAL.MATERIALS
-	local virtual_wall_names = 
+	local virtual_wall_names =
 	{
 		"wall_"..MATERIALS.STONE,
 		"wall_"..MATERIALS.WOOD,
@@ -144,17 +158,17 @@ local function AddVirtualRecipe()
 	}
 	for k, v in pairs(virtual_wall_names) do
 		STRINGS.NAMES[string.upper(VIRTUAL_PREFIX..v)] = "Virtual "..STRINGS.NAMES[string.upper(v)]
-		
+
 		local v_item = v.."_item"
 		STRINGS.NAMES[string.upper(VIRTUAL_PREFIX..v_item)] = "Virtual "..STRINGS.NAMES[string.upper(v_item)]
 		AddRecipe(VIRTUAL_PREFIX..v_item, {Ingredient(CHARACTER_INGREDIENT.SANITY, 0)}, virtualtab, TECH.NONE, nil,nil, nil, 50, nil, nil, v_item..".tex")
 	end
 
 	-- add virtual minetraps
-	local virtual_minetrap_names = 
+	local virtual_minetrap_names =
 	{
 		"trap_teeth",
-	} 
+	}
 
 	for k, v in pairs(virtual_minetrap_names) do
 		STRINGS.NAMES[string.upper(VIRTUAL_PREFIX..v)] = "Virtual "..STRINGS.NAMES[string.upper(v)]
@@ -165,44 +179,3 @@ local function AddVirtualRecipe()
 end
 -- add recipe
 AddVirtualRecipe()
-
-
-GLOBAL.VR_File = 
-{
-
-	SaveTable = 
-	function(data, filepath)
-		if data and type(data) == "table" and filepath and type(filepath) == "string" then
-			GLOBAL.SavePersistentString(filepath, GLOBAL.DataDumper(data, nil, true), false, nil)
-			print("DATA HAS SAVED!")
-		else
-			print("Error type:"..type(data))
-		end
-	end
-	,
-
- 	LoadTable = 
- 	function(filepath)
-		local data = nil
-		GLOBAL.TheSim:GetPersistentString(filepath,
-			function(load_success, str)
-				if load_success == true then
-					local success, loaddata = GLOBAL.RunInSandboxSafe(str)
-					if success and string.len(str) > 0 then
-						data = loaddata
-					else
-						print ("[Virtual Reality] Could not load "..filepath)
-					end
-				else
-					print ("[Virtual Reality] Can not find "..filepath)
-				end
-			end
-		)
-		return data
-	end
-	,
-}
-
-
-
-

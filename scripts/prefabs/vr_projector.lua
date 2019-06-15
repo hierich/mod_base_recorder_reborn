@@ -1,26 +1,26 @@
 local assets=
-{ 
+{
     Asset("ANIM", "anim/vr_projector.zip"),
-    Asset("ANIM", "anim/swap_vr_projector.zip"), 
+    Asset("ANIM", "anim/swap_vr_projector.zip"),
 
     Asset("ATLAS", "images/inventoryimages/vr_projector.xml"),
     Asset("IMAGE", "images/inventoryimages/vr_projector.tex"),
 }
 
-local prefabs = 
-{		
+local prefabs =
+{
 }
 
 local record_path = STRINGS.VR_RECORD_PATH
 -- local VIRTUAL_PREFIX = "virtual_"
 local VIRTUAL_PREFIX = STRINGS.VIRTUAL_PREFIX
 
--- local function Id2Player(id) 
--- 	local player = nil 
--- 	for k, v in pairs(AllPlayers) do 
--- 		if v.userid == id then player = v end 
--- 	end 
--- 	return player 
+-- local function Id2Player(id)
+-- 	local player = nil
+-- 	for k, v in pairs(AllPlayers) do
+-- 		if v.userid == id then player = v end
+-- 	end
+-- 	return player
 -- end
 
 ------------------------------------ setting ------------------------------------
@@ -58,7 +58,7 @@ local function Project(pos)
         layout_record = baseplan.layout_record
     end
 
-    
+
 
 	-- use a stone wall item to test if this place can be depolyed
 	local test_obj = SpawnPrefab("wall_stone_item")
@@ -72,7 +72,7 @@ local function Project(pos)
 			if CanProject(inst) then
 				local virtual_thing = SpawnPrefab(VIRTUAL_PREFIX..inst.name)
 	        	if virtual_thing then
-				    local pt = Vector3(pos.x+inst.x, pos.y+inst.y, pos.z+inst.z)
+				    local pt = Vector3(vrRound(pos.x+inst.x), vrRound(pos.y+inst.y), vrRound(pos.z+inst.z))
 				    local oreint = inst.orient
 				    local test = test_obj.components.deployable:CanDeploy(pt)
 				    -- local test = true
@@ -82,7 +82,7 @@ local function Project(pos)
 		            else
 		            	virtual_thing:Remove()
 		            end
- 
+
 		        else
 		        	print("[VR] cannot spawn prefab")
 	        	end
@@ -93,7 +93,7 @@ local function Project(pos)
 
 	else
 		print("[VR] load data error")
-	end	
+	end
 	test_obj:Remove()
 
 end
@@ -101,27 +101,27 @@ end
 
 local function ondeploy(inst, pt, deployer)
     local x,y,z = pt:Get()
-    x = math.floor(x)+0.5
-    y = math.floor(y)+0.5
-    z = math.floor(z)+0.5
+    pt.x = math.floor(x)+0.5
+    pt.y = 0
+    pt.z = math.floor(z)+0.5
     inst.AnimState:PlayAnimation("work")
-    inst.Transform:SetPosition(x,y,z)   
+    inst.Transform:SetPosition(pt:Get())
     Project(pt)
 end
 
 local function fn(colour)
 
-    local function OnEquip(inst, owner) 
+    local function OnEquip(inst, owner)
         --owner.AnimState:OverrideSymbol("swap_object", "swap_wands", "purplestaff")
         owner.AnimState:OverrideSymbol("swap_object", "swap_vr_projector", "swap_vr_projector")
-        owner.AnimState:Show("ARM_carry") 
-        owner.AnimState:Hide("ARM_normal") 
+        owner.AnimState:Show("ARM_carry")
+        owner.AnimState:Hide("ARM_normal")
 
     end
 
-    local function OnUnequip(inst, owner) 
-        owner.AnimState:Hide("ARM_carry") 
-        owner.AnimState:Show("ARM_normal") 
+    local function OnUnequip(inst, owner)
+        owner.AnimState:Hide("ARM_carry")
+        owner.AnimState:Show("ARM_normal")
 
     end
 
@@ -133,27 +133,27 @@ local function fn(colour)
     inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
     MakeInventoryPhysics(inst)
-    
+
     anim:SetBank("vr_projector")
     anim:SetBuild("vr_projector")
     anim:PlayAnimation("idle")
 
-    if not TheWorld.ismastersim then   
-      return inst  
-    end   
-    
+    if not TheWorld.ismastersim then
+      return inst
+    end
+
     inst.entity:SetPristine()
 
     inst:AddComponent("inventoryitem")
     inst.components.inventoryitem.imagename = "vr_projector"
     inst.components.inventoryitem.atlasname = "images/inventoryimages/vr_projector.xml"
-    
+
     -- inst:AddComponent("equippable")
     -- inst.components.equippable:SetOnEquip( OnEquip )
     -- inst.components.equippable:SetOnUnequip( OnUnequip )
 
     -- inst:AddComponent("inspectable")
- 
+
     -- inst:AddComponent("spellcaster")
     -- inst.components.spellcaster:SetSpellFn(Project)
     -- inst.components.spellcaster.canuseonpoint =true
@@ -161,7 +161,7 @@ local function fn(colour)
     inst:AddComponent("deployable")
     inst.components.deployable.ondeploy = ondeploy
     inst.components.deployable:SetDeployMode(DEPLOYMODE.ANYWHERE)
-    -- MakeHauntableLaunch(inst) 
+    -- MakeHauntableLaunch(inst)
 
 
     return inst
