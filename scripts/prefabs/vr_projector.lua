@@ -49,7 +49,7 @@ local function Project(pos)
 	local baseplan = VR_File.LoadTable(record_path)
     if type(baseplan) ~= "table" then
         print("load data error")
-        return 
+        return
     end
     local title = nil
     local layout_record = nil
@@ -164,7 +164,7 @@ local function fn(colour)
 
     inst:AddComponent("deployable")
     inst.components.deployable.ondeploy = ondeploy
-    inst.components.deployable:SetDeployMode(DEPLOYMODE.ANYWHERE)
+    inst.components.deployable:SetDeployMode(DEPLOYMODE.WALL)
     -- MakeHauntableLaunch(inst)
 
 

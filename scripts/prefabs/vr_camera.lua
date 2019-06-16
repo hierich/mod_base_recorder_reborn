@@ -168,7 +168,7 @@ local function fn(colour)
 
     inst:AddComponent("deployable")
     inst.components.deployable.ondeploy = ondeploy
-    inst.components.deployable:SetDeployMode(DEPLOYMODE.ANYWHERE)
+    inst.components.deployable:SetDeployMode(DEPLOYMODE.WALL)
 
     -- MakeHauntableLaunch(inst)
 
