@@ -47,6 +47,10 @@ local function Project(pos)
 	-- local user_id = staff.components.owner.userid
 	-- TUNING.VR_LAYOUT_RECORDS[user_id]
 	local baseplan = VR_File.LoadTable(record_path)
+    if type(baseplan) ~= "table" then
+        print("load data error")
+        return 
+    end
     local title = nil
     local layout_record = nil
     if baseplan.title == nil then
@@ -72,7 +76,7 @@ local function Project(pos)
 			if CanProject(inst) then
 				local virtual_thing = SpawnPrefab(VIRTUAL_PREFIX..inst.name)
 	        	if virtual_thing then
-				    local pt = Vector3(vrRound(pos.x+inst.x), vrRound(pos.y+inst.y), vrRound(pos.z+inst.z))
+				    local pt = Vector3(vrRound(pos.x+inst.x), pos.y+inst.y, pos.z+inst.z)
 				    local oreint = inst.orient
 				    local test = test_obj.components.deployable:CanDeploy(pt)
 				    -- local test = true
@@ -105,7 +109,7 @@ local function ondeploy(inst, pt, deployer)
     pt.y = 0
     pt.z = math.floor(z)+0.5
     inst.AnimState:PlayAnimation("work")
-    inst.Transform:SetPosition(pt:Get())
+    inst.Transform:SetPosition(pt.x,pt.y,pt.z)
     Project(pt)
 end
 
