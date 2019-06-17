@@ -67,8 +67,8 @@ end
 -- local AffineTransformation(pos, matrix_T)
 
 -- end
-local scale = 1.4
-local function Record(pos)
+local scale = 1.0
+function VR_File.Record(pos)
 	local x = pos.x
 	local y = pos.y
 	local z = pos.z
@@ -103,7 +103,8 @@ local function Record(pos)
 		end
     end
 
-    VR_File.SaveTable(baseplan, record_path)
+    -- VR_File.SaveTable(baseplan, record_path)
+    return VR_Serialization.Serialize(baseplan)
 end
 
 
@@ -114,10 +115,16 @@ local function ondeploy(inst, pt, deployer)
     pt.z = math.floor(z)+0.5
     inst.AnimState:PlayAnimation("work")
     inst.Transform:SetPosition(pt:Get())
-    Record(pt)
+    local baseplan = VR_File.Record(pt)
+    if type(baseplan) ~= "string" then
+        print("VR record error")
+        return nil
+    end
+    deployer.net_vrsavestr:set(baseplan)
     -- local sign = SpawnPrefab("wall_stone")
     -- sign.Transform:SetPosition(x+20,y,z)
 end
+
 
 local function fn(colour)
 

@@ -40,13 +40,13 @@ local function CanProject(inst)
 	return true
 end
 
-local function Project(pos)
+function VR_File.Project(pos, baseplan)
 	-- if staff.components.owner == nil then
 	-- 	return
 	-- end
 	-- local user_id = staff.components.owner.userid
 	-- TUNING.VR_LAYOUT_RECORDS[user_id]
-	local baseplan = VR_File.LoadTable(record_path)
+	-- local baseplan = VR_File.LoadTable(record_path)
     if type(baseplan) ~= "table" then
         print("load data error")
         return
@@ -76,7 +76,7 @@ local function Project(pos)
 			if CanProject(inst) then
 				local virtual_thing = SpawnPrefab(VIRTUAL_PREFIX..inst.name)
 	        	if virtual_thing then
-				    local pt = Vector3(vrRound(pos.x+inst.x), pos.y+inst.y, pos.z+inst.z)
+				    local pt = Vector3(vrRound(pos.x+inst.x), vrRound(pos.y+inst.y), vrRound(pos.z+inst.z))
 				    local oreint = inst.orient
 				    local test = test_obj.components.deployable:CanDeploy(pt)
 				    -- local test = true
@@ -110,7 +110,9 @@ local function ondeploy(inst, pt, deployer)
     pt.z = math.floor(z)+0.5
     inst.AnimState:PlayAnimation("work")
     inst.Transform:SetPosition(pt.x,pt.y,pt.z)
-    Project(pt)
+    -- Project(pt)
+    deployer.pose = pt
+    deployer.net_vrload:set(not deployer.net_vrload:value())
 end
 
 local function fn(colour)

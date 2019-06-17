@@ -179,3 +179,75 @@ local function AddVirtualRecipe()
 end
 -- add recipe
 AddVirtualRecipe()
+
+----------------------------------- network functions ----------------------
+
+
+-- Record event
+local function onVRSaveStrDirty(inst)
+	local SaveStr = inst.net_vrsavestr:value()
+	if GLOBAL.type(SaveStr) == "string" then
+		local save_tab = GLOBAL.VR_Serialization.Deserialize(SaveStr)
+		if GLOBAL.type(save_tab) ~= "table" then
+			print("net_variable vrsavestr cannot be deserialized into table")
+			return nil
+		end
+		GLOBAL.VR_File.SaveTable(save_tab, STRINGS.VR_RECORD_PATH)
+	else
+		print("net_variable vrsavestr type error")
+	end
+end
+
+-- project event
+local function onVRLoadDirty(inst)
+	local baseplan = GLOBAL.VR_File.LoadTable(STRINGS.VR_RECORD_PATH)
+	if type(baseplan) ~= "table" then
+		print("load data error")
+		return
+	end
+
+	local serial_str = GLOBAL.VR_Serialization.Serialize(baseplan)
+	if GLOBAL.type(serial_str) == "string" then
+		print("serial data = "..serial_str)
+		-- call master to really project
+		SendModRPCToServer(MOD_RPC[modname]["MasterProject"], serial_str)
+	else
+		print("serial error, its type = "..GLOBAL.type(serial_str))
+	end
+end
+
+-- host will spawn things
+local function MasterProject(player, baseplan_str)
+	local baseplan = GLOBAL.VR_Serialization.Deserialize(baseplan_str)
+	if GLOBAL.type(baseplan) ~= "table" then
+		print("baseplan type error, so mastersim cannot project")
+		return nil
+	end
+
+	GLOBAL.VR_File.Project(player.pose, baseplan)
+end
+-- add project function above
+AddModRPCHandler(modname, "MasterProject", MasterProject)
+
+
+local function customhppostinit(inst)
+	-- Net variable that stores between 0-255; more info in netvars.lua
+	-- GUID of entity, unique identifier of variable, event pushed when variable changes
+	-- Event is pushed to the entity it refers to, server and client side wise
+
+	-- tansfer saved string of baseplan
+	inst.net_vrsavestr = GLOBAL.net_string(inst.GUID, "vrsavestr", "vrsavestrdirty")
+	-- tell to load
+	inst.net_vrload = GLOBAL.net_bool(inst.GUID, "vrload", "vrloaddirty")
+
+
+
+	-- Dedicated server is dummy player, only players hosting or clients have the badges
+	-- Only them react to the event pushed when the net variable changes
+	if not GLOBAL.TheNet:IsDedicated() then
+		inst:ListenForEvent("vrsavestrdirty", onVRSaveStrDirty)
+		inst:ListenForEvent("vrloaddirty", onVRLoadDirty)
+	end
+end
+-- Apply function on player entity post initialization
+AddPlayerPostInit(customhppostinit)
