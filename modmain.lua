@@ -50,7 +50,7 @@ local color = GetModConfigData("color")
 TUNING.VIRTUALRED = color / 100
 TUNING.VIRTUALGREEN = (color/10)%10
 TUNING.VIRTUALBLUE = color%10
-
+TUNING.VRTOOL_USES = GetModConfigData("vrtool_uses")
 
 STRINGS.VIRTUAL_PREFIX = "virtual_"
 local VIRTUAL_PREFIX = STRINGS.VIRTUAL_PREFIX
@@ -208,7 +208,7 @@ local function onVRLoadDirty(inst)
 
 	local serial_str = GLOBAL.VR_Serialization.Serialize(baseplan)
 	if GLOBAL.type(serial_str) == "string" then
-		print("serial data = "..serial_str)
+		-- print("serial data = "..serial_str)
 		-- call master to really project
 		SendModRPCToServer(MOD_RPC[modname]["MasterProject"], serial_str)
 	else

@@ -123,6 +123,13 @@ local function ondeploy(inst, pt, deployer)
     deployer.net_vrsavestr:set(baseplan)
     -- local sign = SpawnPrefab("wall_stone")
     -- sign.Transform:SetPosition(x+20,y,z)
+    -- uses
+    if inst.components.finiteuses ~= nil then
+        inst.components.finiteuses.current = inst.components.finiteuses.current-1
+        if inst.components.finiteuses.current <= 0 then
+            inst:Remove()
+        end
+    end
 end
 
 
@@ -176,6 +183,14 @@ local function fn(colour)
     inst:AddComponent("deployable")
     inst.components.deployable.ondeploy = ondeploy
     inst.components.deployable:SetDeployMode(DEPLOYMODE.WALL)
+
+    if TUNING.VRTOOL_USES ~= -1 then
+        inst:AddComponent("finiteuses")
+        local CAMERA_USES = TUNING.VRTOOL_USES
+        inst.components.finiteuses:SetMaxUses(CAMERA_USES)
+        inst.components.finiteuses:SetUses(CAMERA_USES)
+        inst.components.finiteuses:SetOnFinished(inst.Remove)
+    end
 
     -- MakeHauntableLaunch(inst)
 

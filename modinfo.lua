@@ -1,23 +1,23 @@
-name = "Base Recorder Reborn dev" 
+name = "Base Recorder Reborn dev"
 description = "可以预先建造虚拟建筑进行规划\n"..
 	"用照相机和投影仪来记录，投影你的基地\n"..
 	"可选择颜色和透明度\n"..
 	"You can make virtual structure for future plan.\n"..
 	"Use the camera and the projector to record, project your base.\n"..
-	"You can choose color and alpha." 
-author = "Heinrich" 
-version = "1.3"   
-forumthread = ""  
-api_version = 10  
-dst_compatible = true  
-dont_starve_compatible = false 
-reign_of_giants_compatible = false  
-all_clients_require_mod = true   
-icon_atlas = "modicon.xml" 
-icon = "modicon.tex"  
-server_filter_tags = {     "virtual structure", }  
+	"You can choose color and alpha."
+author = "Heinrich"
+version = "1.3"
+forumthread = ""
+api_version = 10
+dst_compatible = true
+dont_starve_compatible = false
+reign_of_giants_compatible = false
+all_clients_require_mod = true
+icon_atlas = "modicon.xml"
+icon = "modicon.tex"
+server_filter_tags = {     "virtual structure", }
 configuration_options = {
-{     
+{
 	name = "language",
 	label = "语言language",
 	options =
@@ -26,8 +26,8 @@ configuration_options = {
 		{description = "中文", data = 2},
 	},
 	default = 1,
-}, 
-{   
+},
+{
 	name = "alpha",
 	label = "不透明度alpha",
 	options =
@@ -57,5 +57,16 @@ configuration_options = {
 		{description = "青Cyan", data = 011},
 	},
 	default = 0.5,
+},
+{
+	name = "vrtool_uses",
+	label = "使用次数uses",
+	options =
+	{
+		{description = "2", data = 2},
+		{description = "5", data = 5},
+		{description = "infinite", data = -1},
+	},
+	default = 2,
 },
 }

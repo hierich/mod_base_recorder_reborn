@@ -113,6 +113,14 @@ local function ondeploy(inst, pt, deployer)
     -- Project(pt)
     deployer.pose = pt
     deployer.net_vrload:set(not deployer.net_vrload:value())
+
+    -- uses
+    if inst.components.finiteuses ~= nil then
+        inst.components.finiteuses.current = inst.components.finiteuses.current-1
+        if inst.components.finiteuses.current <= 0 then
+            inst:Remove()
+        end
+    end
 end
 
 local function fn(colour)
@@ -167,6 +175,16 @@ local function fn(colour)
     inst:AddComponent("deployable")
     inst.components.deployable.ondeploy = ondeploy
     inst.components.deployable:SetDeployMode(DEPLOYMODE.WALL)
+
+    if TUNING.VRTOOL_USES ~= -1 then
+        inst:AddComponent("finiteuses")
+        local PROJECTOR_USES = TUNING.VRTOOL_USES
+        inst.components.finiteuses:SetMaxUses(PROJECTOR_USES)
+        inst.components.finiteuses:SetUses(PROJECTOR_USES)
+        inst.components.finiteuses:SetOnFinished(inst.Remove)
+    end
+
+
     -- MakeHauntableLaunch(inst)
 
 
