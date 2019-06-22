@@ -27,7 +27,7 @@ local TECH = GLOBAL.TECH
 local AllRecipes = GLOBAL.AllRecipes
 local CHARACTER_INGREDIENT = GLOBAL.CHARACTER_INGREDIENT
 local TUNING = GLOBAL.TUNING
-
+local require = GLOBAL.require
 
 -----------------------config---------------------------
 
@@ -192,7 +192,8 @@ local function onVRSaveStrDirty(inst)
 			print("net_variable vrsavestr cannot be deserialized into table")
 			return nil
 		end
-		GLOBAL.VR_File.SaveTable(save_tab, STRINGS.VR_RECORD_PATH)
+		-- GLOBAL.VR_File.SaveTable(save_tab, STRINGS.VR_RECORD_PATH)
+		inst.vr_planner:SavePlan(save_tab)
 	else
 		print("net_variable vrsavestr type error")
 	end
@@ -200,7 +201,8 @@ end
 
 -- project event
 local function onVRLoadDirty(inst)
-	local baseplan = GLOBAL.VR_File.LoadTable(STRINGS.VR_RECORD_PATH)
+	local baseplan = inst.vr_planner:LoadPlan()
+	-- local baseplan = GLOBAL.VR_File.LoadTable(STRINGS.VR_RECORD_PATH)
 	if type(baseplan) ~= "table" then
 		print("load data error")
 		return
@@ -229,7 +231,8 @@ end
 -- add project function above
 AddModRPCHandler(modname, "MasterProject", MasterProject)
 
-
+local planner = require("planner")
+local vr_planner = planner()
 local function customhppostinit(inst)
 	-- Net variable that stores between 0-255; more info in netvars.lua
 	-- GUID of entity, unique identifier of variable, event pushed when variable changes
@@ -240,14 +243,26 @@ local function customhppostinit(inst)
 	-- tell to load
 	inst.net_vrload = GLOBAL.net_bool(inst.GUID, "vrload", "vrloaddirty")
 
-
-
 	-- Dedicated server is dummy player, only players hosting or clients have the badges
 	-- Only them react to the event pushed when the net variable changes
 	if not GLOBAL.TheNet:IsDedicated() then
 		inst:ListenForEvent("vrsavestrdirty", onVRSaveStrDirty)
 		inst:ListenForEvent("vrloaddirty", onVRLoadDirty)
 	end
+
+	inst.vr_planner = vr_planner
 end
 -- Apply function on player entity post initialization
 AddPlayerPostInit(customhppostinit)
+
+
+---------------------------- add ui --------------------------
+local planner_ui = require("widgets/planner_ui")
+
+local function AddUI(self)
+    if self.owner then
+		self.vr_planner_ui = self:AddChild(planner_ui(vr_planner,"virtualtab"))
+		vr_planner:AddUI(self.vr_planner_ui)
+    end
+end
+AddClassPostConstruct("widgets/controls", AddUI)
