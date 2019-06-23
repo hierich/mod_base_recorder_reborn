@@ -54,7 +54,7 @@ TUNING.VRTOOL_USES = GetModConfigData("vrtool_uses")
 
 STRINGS.VIRTUAL_PREFIX = "virtual_"
 local VIRTUAL_PREFIX = STRINGS.VIRTUAL_PREFIX
-STRINGS.VR_RECORD_PATH = "mod_config_data/vr_record"
+STRINGS.VR_RECORD_PATH = "vr_record"
 STRINGS.NAMES.VIRTUAL_TAB = "Virtual"
 
 -------------------------util--------------------------
@@ -64,7 +64,6 @@ modimport("scripts/vrUtils.lua")
 -------------------------addd recipe----------------------
 local function AddVirtualRecipe()
 	local virtualtab = AddRecipeTab(STRINGS.NAMES.VIRTUAL_TAB, 99, "images/hud/virtualtab.xml", "virtualtab.tex")
-	print("add virtual tab")
 
 	-- add virtual recipes one by one
 
@@ -76,6 +75,45 @@ local function AddVirtualRecipe()
 	STRINGS.NAMES[string.upper("vr_camera")] = "VR Camera"
 	local vr_camera = AddRecipe("vr_camera", {Ingredient("ice", 10), Ingredient("deerclops_eyeball", 1), Ingredient("rocks", 8)}, virtualtab, TECH.NONE)
 	vr_camera.atlas = "images/inventoryimages/vr_camera.xml"
+
+	-- add virtual plantable
+	local virtual_plantable_names =
+	{
+		"grass",
+		"sapling",
+		"berrybush",
+		"berrybush2",
+		"berrybush_juicy",
+		"marsh_bush",
+	}
+
+	for k, v in pairs(virtual_plantable_names) do
+		STRINGS.NAMES[string.upper(VIRTUAL_PREFIX..v)] = "Virtual "..STRINGS.NAMES[string.upper(v)]
+
+		local dug_v = "dug_"..v
+		STRINGS.NAMES[string.upper(VIRTUAL_PREFIX..dug_v)] = "Virtual "..STRINGS.NAMES[string.upper(dug_v)]
+		AddRecipe(VIRTUAL_PREFIX..dug_v, {Ingredient(CHARACTER_INGREDIENT.SANITY, 0)}, virtualtab, TECH.NONE, nil,nil, nil, 50, nil, nil, dug_v..".tex")
+	end
+
+	-- add virtual wall, fence, gate
+	local MATERIALS = GLOBAL.MATERIALS
+	local virtual_wall_names =
+	{
+		"wall_"..MATERIALS.STONE,
+		"wall_"..MATERIALS.WOOD,
+		"wall_"..MATERIALS.HAY,
+		"wall_ruins",
+		"wall_"..MATERIALS.MOONROCK,
+		"fence",
+		"fence_gate",
+	}
+	for k, v in pairs(virtual_wall_names) do
+		STRINGS.NAMES[string.upper(VIRTUAL_PREFIX..v)] = "Virtual "..STRINGS.NAMES[string.upper(v)]
+
+		local v_item = v.."_item"
+		STRINGS.NAMES[string.upper(VIRTUAL_PREFIX..v_item)] = "Virtual "..STRINGS.NAMES[string.upper(v_item)]
+		AddRecipe(VIRTUAL_PREFIX..v_item, {Ingredient(CHARACTER_INGREDIENT.SANITY, 0)}, virtualtab, TECH.NONE, nil,nil, nil, 50, nil, nil, v_item..".tex")
+	end
 
 	-- add virtual structure
 	local virtual_structure_names =
@@ -125,56 +163,17 @@ local function AddVirtualRecipe()
 		end
 	end
 
-	-- add virtual plantable
-	local virtual_plantable_names =
-	{
-		"grass",
-		"sapling",
-		"berrybush",
-		"berrybush2",
-		"berrybush_juicy",
-		"marsh_bush",
-	}
-
-	for k, v in pairs(virtual_plantable_names) do
-		STRINGS.NAMES[string.upper(VIRTUAL_PREFIX..v)] = "Virtual "..STRINGS.NAMES[string.upper(v)]
-
-		local dug_v = "dug_"..v
-		STRINGS.NAMES[string.upper(VIRTUAL_PREFIX..dug_v)] = "Virtual "..STRINGS.NAMES[string.upper(dug_v)]
-		AddRecipe(VIRTUAL_PREFIX..dug_v, {Ingredient(CHARACTER_INGREDIENT.SANITY, 0)}, virtualtab, TECH.NONE, nil,nil, nil, 50, nil, nil, dug_v..".tex")
-	end
-
-	-- add virtual wall, fence, gate
-	local MATERIALS = GLOBAL.MATERIALS
-	local virtual_wall_names =
-	{
-		"wall_"..MATERIALS.STONE,
-		"wall_"..MATERIALS.WOOD,
-		"wall_"..MATERIALS.HAY,
-		"wall_ruins",
-		"wall_"..MATERIALS.MOONROCK,
-		"fence",
-		"fence_gate",
-	}
-	for k, v in pairs(virtual_wall_names) do
-		STRINGS.NAMES[string.upper(VIRTUAL_PREFIX..v)] = "Virtual "..STRINGS.NAMES[string.upper(v)]
-
-		local v_item = v.."_item"
-		STRINGS.NAMES[string.upper(VIRTUAL_PREFIX..v_item)] = "Virtual "..STRINGS.NAMES[string.upper(v_item)]
-		AddRecipe(VIRTUAL_PREFIX..v_item, {Ingredient(CHARACTER_INGREDIENT.SANITY, 0)}, virtualtab, TECH.NONE, nil,nil, nil, 50, nil, nil, v_item..".tex")
-	end
-
-	-- add virtual minetraps
-	local virtual_minetrap_names =
-	{
-		"trap_teeth",
-	}
-
-	for k, v in pairs(virtual_minetrap_names) do
-		STRINGS.NAMES[string.upper(VIRTUAL_PREFIX..v)] = "Virtual "..STRINGS.NAMES[string.upper(v)]
-		STRINGS.NAMES[string.upper(VIRTUAL_PREFIX..v.."_item")] = "Virtual "..STRINGS.NAMES[string.upper(v)]
-		AddRecipe(VIRTUAL_PREFIX..v.."_item", {Ingredient(CHARACTER_INGREDIENT.SANITY, 0)}, virtualtab, TECH.NONE, nil,nil, nil, 50, nil, nil, v..".tex")
-	end
+	-- -- add virtual minetraps
+	-- local virtual_minetrap_names =
+	-- {
+	-- 	"trap_teeth",
+	-- }
+	--
+	-- for k, v in pairs(virtual_minetrap_names) do
+	-- 	STRINGS.NAMES[string.upper(VIRTUAL_PREFIX..v)] = "Virtual "..STRINGS.NAMES[string.upper(v)]
+	-- 	STRINGS.NAMES[string.upper(VIRTUAL_PREFIX..v.."_item")] = "Virtual "..STRINGS.NAMES[string.upper(v)]
+	-- 	AddRecipe(VIRTUAL_PREFIX..v.."_item", {Ingredient(CHARACTER_INGREDIENT.SANITY, 0)}, virtualtab, TECH.NONE, nil,nil, nil, 50, nil, nil, v..".tex")
+	-- end
 
 end
 -- add recipe
@@ -192,7 +191,6 @@ local function onVRSaveStrDirty(inst)
 			print("net_variable vrsavestr cannot be deserialized into table")
 			return nil
 		end
-		-- GLOBAL.VR_File.SaveTable(save_tab, STRINGS.VR_RECORD_PATH)
 		inst.vr_planner:SavePlan(save_tab)
 	else
 		print("net_variable vrsavestr type error")
@@ -202,7 +200,6 @@ end
 -- project event
 local function onVRLoadDirty(inst)
 	local baseplan = inst.vr_planner:LoadPlan()
-	-- local baseplan = GLOBAL.VR_File.LoadTable(STRINGS.VR_RECORD_PATH)
 	if type(baseplan) ~= "table" then
 		print("load data error")
 		return
@@ -261,7 +258,7 @@ local planner_ui = require("widgets/planner_ui")
 
 local function AddUI(self)
     if self.owner then
-		self.vr_planner_ui = self:AddChild(planner_ui(vr_planner,"virtualtab"))
+		self.vr_planner_ui = self:AddChild(planner_ui(vr_planner,"images/inventoryimages.xml","blueprint.tex"))
 		vr_planner:AddUI(self.vr_planner_ui)
     end
 end

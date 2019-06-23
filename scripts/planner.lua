@@ -30,8 +30,10 @@ function planner:switch(baseplan_index)
             self:unhighlight(i)
         end
     end
-    local title = self.baseplans[self.baseplan_index]:GetTitle()
-    self:setTitle(title)
+    -- local title = self.baseplans[self.baseplan_index]:GetTitle()
+    -- self:setTitle(title)
+    local baseplan_stat = self.baseplans[self.baseplan_index]:GetStat()
+    self:setStat(baseplan_stat)
 end
 
 function planner:highlight(baseplan_index)
@@ -44,6 +46,10 @@ end
 
 function planner:setTitle(title)
     self.planner_ui:setTitle(title, self.baseplan_index)
+end
+
+function planner:setStat(baseplan_stat)
+    self.planner_ui:setStat(baseplan_stat, self.baseplan_index)
 end
 function planner:LoadPlan()
     return self.baseplans[self.baseplan_index]:GetContent()
